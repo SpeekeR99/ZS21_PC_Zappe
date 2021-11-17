@@ -4,9 +4,13 @@
 #include "pgm.h"
 
 /**
- *
- * @param filepath
- * @return
+ * Creates pgm structure based on input file
+ * Expecting first 2 symbols to be "magic-numbers" of pgm (P2, P5 etc)
+ * Expecting next symbols to be width and height
+ * Expecting next symbol to be max_value of pixel
+ * Then expecting the pixels of the image itself
+ * @param filepath Path to PGM image file
+ * @return Pointer to corresponding structure if everything goes well, NULL otherwise
  */
 pgm *create_pgm(char *filepath) {
     // Inicialization
@@ -68,6 +72,10 @@ pgm *create_pgm(char *filepath) {
     return temp;
 }
 
+/**
+ * Frees the array within the pgm structure, then frees the structure itself
+ * @param p double pointer to pgm struct
+ */
 void free_pgm(pgm **p) {
     // Sanity check
     if (!p) return;
