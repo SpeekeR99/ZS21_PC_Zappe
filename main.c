@@ -1,13 +1,16 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include "pgm.h"
 
 int main() {
     pgm *image;
-    char *path = "C:/Users/SpeekeR/Documents/_FAV/2. Druhak/Zimak/PC/Semestralka/data/w2test.pgm";
+    char *input = "../data/w2test.pgm";
+    char *result = "../data/result.pgm";
 
-    image = create_pgm(path);
+    image = create_pgm(input);
     if (!image) return EXIT_FAILURE;
+
+    write_pgm_file(image, result);
+
     free_pgm(&image);
 
     return EXIT_SUCCESS;

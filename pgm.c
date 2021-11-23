@@ -22,7 +22,7 @@ pgm *create_pgm(char *filepath) {
     // Opening file from param
     fp = fopen(filepath, "r");
     if (!fp) {
-        printf("ERROR: Filepath is invalid, input file might not exist!");
+        perror("ERROR: Filepath is invalid, input file might not exist!");
         return NULL;
     }
 
@@ -56,6 +56,7 @@ pgm *create_pgm(char *filepath) {
         i = i * 10 + ch - '0';
     }
     temp->max_value = i;
+    fgetc(fp); // Skipping the whitespace after max_value
 
     // Storing actual PGM image data (pixel values)
     i = 0;
@@ -68,8 +69,51 @@ pgm *create_pgm(char *filepath) {
         i++;
     }
 
-    fclose(fp);
+    // Checking if the file is properly closed
+    if (fclose(fp) == EOF) {
+        perror("ERROR Closing input file!");
+        return 0;
+    }
+
     return temp;
+}
+
+/**
+ * Creates a .pgm file based on pgm struct
+ * @param p pointer to pgm struct that is to be written into a file
+ * @param filepath filepath to the new file
+ * @return 1 if everything went well, 0 if there was an error
+ */
+int write_pgm_file(pgm *p, char *filepath) {
+    // Inicialization
+    FILE *fp = NULL;
+    int i = 0;
+
+    // Sanity check
+    if (!p) return 0;
+
+    // Opening file for writing
+    fp = fopen(filepath, "w");
+    if (!fp) {
+        perror("ERROR: Something went wrong with creating the file!\nProbably out of memory!");
+        return 0;
+    }
+
+    // Writing actual data into the file
+    fprintf(fp, "%s\n", p->magic_number);
+    fprintf(fp, "%d %d\n", p->width, p->height);
+    fprintf(fp, "%d\n", p->max_value);
+    for (i = 0; i < p->width * p->height; i++) {
+        fputc(p->data[i], fp);
+    }
+
+    // Checking if the file is properly closed
+    if (fclose(fp) == EOF) {
+        perror("ERROR Closing output file!");
+        return 0;
+    }
+
+    return 1;
 }
 
 /**
