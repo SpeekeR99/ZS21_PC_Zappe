@@ -13,6 +13,7 @@ typedef struct {
 } pgm;
 
 pgm *create_pgm(char *filepath);
+int is_pgm_binary(pgm *p);
 int write_pgm_file(pgm *p, char *filepath);
 void free_pgm(pgm **p);
 

@@ -14,7 +14,7 @@
  * @return Pointer to corresponding structure if everything goes well, NULL otherwise
  */
 pgm *create_pgm(char *filepath) {
-    // Inicialization
+    // Initialization
     FILE *fp = NULL;
     pgm *temp = NULL;
     unsigned char ch;
@@ -83,13 +83,33 @@ pgm *create_pgm(char *filepath) {
 }
 
 /**
+ * Checks if the given pgm image is binary (consisting only of 0x00 and 0xFF)
+ * @param p pgm image saved as struct pgm
+ * @return 1 if the image is binary, 0 if it's not
+ */
+int is_pgm_binary(pgm *p) {
+    // Initialization
+    int i = 0;
+
+    // Sanity check
+    if (!p) return 0;
+
+    // Checking data byte by byte
+    for (i = 0; i < p->width * p->height; i++) {
+        if (p->data[i] != 0x00 && p->data[i] != 0xFF) return 0;
+    }
+
+    return 1;
+}
+
+/**
  * Creates a .pgm file based on pgm struct
  * @param p pointer to pgm struct that is to be written into a file
  * @param filepath filepath to the new file
  * @return 1 if everything went well, 0 if there was an error
  */
 int write_pgm_file(pgm *p, char *filepath) {
-    // Inicialization
+    // Initialization
     FILE *fp = NULL;
     int i = 0;
 
