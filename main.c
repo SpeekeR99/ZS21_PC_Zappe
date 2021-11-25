@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "pgm.h"
 #include "mem.h"
+#include "ccl.h"
 
 /**
  * Function checks if the input file is in binary form
@@ -11,7 +12,7 @@
  */
 void check_binary_input(pgm* p) {
     if(!is_pgm_binary(p)) {
-        printf("Input file is not binary!\nInput file must be black and white!\n");
+        perror("ERROR: Input file is not binary!\nInput file must be black and white!\n");
         exit(2);
     }
 }
@@ -26,13 +27,12 @@ int main() {
 
     check_binary_input(image);
 
+    run_ccl_algo(image->data, image->width, image->height);
+
     write_pgm_file(image, result);
 
-    printf("Before free: %d\n", mem_blocks);
-
+//    printf("Before free: %d\n", mem_blocks);
     free_pgm(&image);
-
-    printf("After free: %d\n", mem_blocks);
-
+//    printf("After free: %d\n", mem_blocks);
     return EXIT_SUCCESS;
 }

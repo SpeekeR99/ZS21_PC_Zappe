@@ -92,14 +92,14 @@ int is_pgm_binary(pgm *p) {
     int i = 0;
 
     // Sanity check
-    if (!p) return 0;
+    if (!p) return FAILURE;
 
     // Checking data byte by byte
     for (i = 0; i < p->width * p->height; i++) {
-        if (p->data[i] != 0x00 && p->data[i] != 0xFF) return 0;
+        if (p->data[i] != 0x00 && p->data[i] != 0xFF) return FAILURE;
     }
 
-    return 1;
+    return SUCCESS;
 }
 
 /**
@@ -114,13 +114,13 @@ int write_pgm_file(pgm *p, char *filepath) {
     int i = 0;
 
     // Sanity check
-    if (!p) return 0;
+    if (!p) return FAILURE;
 
     // Opening file for writing
     fp = fopen(filepath, "w");
     if (!fp) {
         perror("ERROR: Something went wrong with creating the file!\nProbably out of memory!");
-        return 0;
+        return FAILURE;
     }
 
     // Writing actual data into the file
@@ -134,10 +134,10 @@ int write_pgm_file(pgm *p, char *filepath) {
     // Checking if the file is properly closed
     if (fclose(fp) == EOF) {
         perror("ERROR Closing output file!");
-        return 0;
+        return FAILURE;
     }
 
-    return 1;
+    return SUCCESS;
 }
 
 /**
