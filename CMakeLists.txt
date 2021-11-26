@@ -3,4 +3,4 @@ project(Semestralka C)
 
 set(CMAKE_C_STANDARD 90)
 
-add_executable(Semestralka main.c pgm.c pgm.h mem.c mem.h ccl.c ccl.h)
+add_executable(Semestralka main.c pgm.c pgm.h mem.c mem.h ccl.c ccl.h disj_set.c disj_set.h)
