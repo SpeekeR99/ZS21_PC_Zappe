@@ -1,73 +1,140 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "ccl.h"
+#include "disj_set.h"
 #include "mem.h"
 
-void first_pass(byte *data, byte *labels, uint width, uint height) {
-    uint x, y, curr_index;
-    byte next_label = 0, left, top_left, top, top_right;
+int run_ccl_algo(byte *data, uint width, uint height) {
+    // Init
+    uint x, y, next_label = 1, curr_index, left_index, top_left_index, top_index, top_right_index;
+    disj_set_element *left_el, *top_left_el, *top_el, *top_right_el;
+    disj_set_element **disj_sets = NULL;
 
+    // Sanity check
+    if (!data) return FAILURE;
+    disj_sets = (disj_set_element **) calloc(width * height, sizeof(disj_set_element));
+    if (!disj_sets) return FAILURE;
+
+    // First pixel
+    if (data[0] != 0x00) {
+        disj_sets[0] = disj_set_make_set(next_label);
+        next_label++;
+    }
+
+    // First row of pixels
+    for (x = 1; x < width; x++) {
+        if (data[x] != 0x00) {
+            if (data[x-1] != 0x00) {
+                disj_sets[x] = disj_set_make_set(disj_sets[x-1]->value);
+                disj_set_union(disj_sets[x], disj_sets[x-1]);
+            } else {
+                disj_sets[x] = disj_set_make_set(next_label);
+                next_label++;
+            }
+        }
+    }
+
+    // First column of pixels
+    for (y = 1; y < height; y++) {
+        curr_index = y * width;
+        if (data[curr_index] != 0x00) {
+            if (data[curr_index - width] != 0x00) {
+                disj_sets[curr_index] = disj_set_make_set(disj_sets[curr_index - width]->value);
+                disj_set_union(disj_sets[curr_index], disj_sets[curr_index - width]);
+            } else {
+                disj_sets[curr_index] = disj_set_make_set(next_label);
+                next_label++;
+            }
+        }
+    }
+
+    // Last column of pixels
+    for (y = 1; y < height; y++) {
+        curr_index = y * width + width - 1;
+        if (data[curr_index] != 0x00) {
+            if (data[curr_index - width] != 0x00) {
+                disj_sets[curr_index] = disj_set_make_set(disj_sets[curr_index - width]->value);
+                disj_set_union(disj_sets[curr_index], disj_sets[curr_index - width]);
+            } else {
+                disj_sets[curr_index] = disj_set_make_set(next_label);
+                next_label++;
+            }
+        }
+    }
+
+    // All the other pixels
     for (y = 1; y < height; y++) {
         for (x = 1; x < width - 1; x++) {
             curr_index = x + y * width;
             if (data[curr_index] != 0x00) {
-                left = labels[curr_index - 1];
-                top_left = labels[curr_index - 1 - width];
-                top = labels[curr_index - width];
-                top_right = labels[curr_index + 1 - width];
-                if (left != 0x00 || top_left != 0x00 || top != 0x00 || top_right != 0x00) {
-                    if (left != 0x00) labels[curr_index] = left;
-                    else if (top_left != 0x00) labels[curr_index] = top_left;
-                    else if (top != 0x00) labels[curr_index] = top;
-                    else labels[curr_index] = top_right;
-                }
-                else {
-                    labels[curr_index] = next_label;
+                left_index = curr_index - 1;
+                top_left_index = curr_index - 1 - width;
+                top_index = curr_index - width;
+                top_right_index = curr_index + 1 - width;
+                if (data[left_index] != 0x00 || data[top_left_index] != 0x00 || data[top_index] != 0x00 || data[top_right_index] != 0x00) {
+                    left_el = disj_sets[left_index];
+                    top_left_el = disj_sets[top_left_index];
+                    top_el = disj_sets[top_index];
+                    top_right_el = disj_sets[top_right_index];
+                    if (left_el) {
+                        disj_sets[curr_index] = disj_set_make_set(left_el->value);
+                        disj_set_union(disj_sets[curr_index], left_el);
+                    } else if (top_left_el) {
+                        disj_sets[curr_index] = disj_set_make_set(top_left_el->value);
+                        disj_set_union(disj_sets[curr_index], top_left_el);
+                    } else if (top_el) {
+                        disj_sets[curr_index] = disj_set_make_set(top_el->value);
+                        disj_set_union(disj_sets[curr_index], top_el);
+                    } else {
+                        disj_sets[curr_index] = disj_set_make_set(top_right_el->value);
+                        disj_set_union(disj_sets[curr_index], top_right_el);
+                    }
+                    disj_set_union(left_el, top_left_el);
+                    disj_set_union(top_left_el, top_el);
+                    disj_set_union(top_el, top_right_el);
+                } else {
+                    disj_sets[curr_index] = disj_set_make_set(next_label);
                     next_label++;
                 }
             }
         }
     }
-}
 
-byte get_min(byte left, byte top_left, byte top, byte top_right) {
-    byte min;
+    int i;
+    int break_now = 0;
+    uint unique = 0;
+    uint *uniques = calloc(100, sizeof(uint));
+    for (y = 0; y < height; y++) {
+        for (x = 0; x < width; x++) {
+            break_now = 0;
+            curr_index = x + y * width;
+            top_el = disj_set_find(disj_sets[curr_index]);
+            if (top_el) {
+                for (i = 0; i < 100; i++) {
+                    if (top_el->value == uniques[i]) {
+                        break_now = 1;
+                        break;
+                    }
+                }
+                if (break_now) {
+                    continue;
+                }
+                uniques[unique] = top_el->value;
+                unique++;
+            }
+        }
+    }
 
-    return min;
-}
+    printf("\nunique=%d\n", unique);
 
-void second_pass(byte *data, byte *labels, uint width, uint height) {
-    uint x, y, curr_index, min;
-    byte left, top_left, top, top_right;
+    for (y = 0; y < height; y++) {
+        for (x = 0; x < width; x++) {
+            curr_index = x + y * width;
+            disj_set_element_free(&(disj_sets[curr_index]));
+        }
+    }
 
-//    for (y = 0; y < height; y++) {
-//        for (x = 0; x < width; x++) {
-//            curr_index = x + y * width;
-//            if (data[curr_index] != 0x00) {
-//                left = labels[curr_index - 1];
-//                top_left = labels[curr_index - 1 - width];
-//                top = labels[curr_index - width];
-//                top_right = labels[curr_index + 1 - width];
-//                min = get_min(left, top_left, top, top_right);
-//                if (min) labels[curr_index] = min;
-//            }
-//        }
-//    }
+    free(disj_sets);
 
-    data = labels;
-
-
-}
-
-int run_ccl_algo(byte *data, uint width, uint height) {
-    // Sanity check
-    if (!data) return FAILURE;
-    byte *labels = (byte *) calloc(width * height, sizeof(byte));
-    if (!labels) return FAILURE;
-
-    first_pass(data, labels, width, height);
-    second_pass(data, labels, width, height);
-
-    free(labels);
     return SUCCESS;
 }
