@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "pgm.h"
-#include "mem.h"
 #include "ccl.h"
 
 /**
@@ -31,8 +30,6 @@ int main() {
 
     write_pgm_file(image, result);
 
-//    printf("Before free: %d\n", mem_blocks);
     free_pgm(&image);
-//    printf("After free: %d\n", mem_blocks);
     return EXIT_SUCCESS;
 }

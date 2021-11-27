@@ -6,8 +6,9 @@
 
 int run_ccl_algo(byte *data, uint width, uint height) {
     // Init
-    uint x, y, next_label = 1, curr_index, left_index, top_left_index, top_index, top_right_index;
-    disj_set_element *left_el, *top_left_el, *top_el, *top_right_el;
+    uint i, x, y, next_label = 1, curr_index, left_index, top_left_index, top_index, top_right_index, continue_now, unique = 0, *uniques = NULL;
+    byte *colors = NULL;
+    disj_set_element *left_el = NULL, *top_left_el = NULL, *top_el = NULL, *top_right_el = NULL;
     disj_set_element **disj_sets = NULL;
 
     // Sanity check
@@ -100,41 +101,65 @@ int run_ccl_algo(byte *data, uint width, uint height) {
         }
     }
 
-    int i;
-    int break_now = 0;
-    uint unique = 0;
-    uint *uniques = calloc(100, sizeof(uint));
+    // Find unique numbers, so colours can be equally distributed
+    uniques = calloc(255, sizeof(uint)); // 255 because there is 256 values in byte, 0 is background
+    if (!uniques) return FAILURE
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
-            break_now = 0;
+            continue_now = 0;
             curr_index = x + y * width;
             top_el = disj_set_find(disj_sets[curr_index]);
             if (top_el) {
-                for (i = 0; i < 100; i++) {
+                for (i = 0; i < 255; i++) {
                     if (top_el->value == uniques[i]) {
-                        break_now = 1;
+                        continue_now = 1;
                         break;
                     }
                 }
-                if (break_now) {
+                if (continue_now) {
                     continue;
                 }
                 uniques[unique] = top_el->value;
                 unique++;
+                if (unique > 255) {
+                    perror("ERROR: There is more than 255 distinct components in the picture!");
+                    return FAILURE;
+                }
             }
         }
     }
 
-    printf("\nunique=%d\n", unique);
+    // Setup colors
+    colors = malloc(unique * sizeof(byte));
+    for (i = 0; i < unique; i++) {
+        colors[i] = (i + 1) * 255 / unique;
+    }
 
+    // Second pass, assign colours
+    for (y = 0; y < height; y++) {
+        for (x = 0; x < width; x++) {
+            curr_index = x + y * width;
+            top_el = disj_set_find(disj_sets[curr_index]);
+            if (top_el) {
+                for (i = 0; i < 255; i++) {
+                    if (top_el->value == uniques[i]) {
+                        data[curr_index] = colors[i];
+                    }
+                }
+            }
+        }
+    }
+
+    // Free
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
             curr_index = x + y * width;
             disj_set_element_free(&(disj_sets[curr_index]));
         }
     }
-
     free(disj_sets);
+    free(uniques);
+    free(colors);
 
     return SUCCESS;
 }

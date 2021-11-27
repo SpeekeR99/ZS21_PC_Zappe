@@ -28,7 +28,7 @@ pgm *create_pgm(char *filepath) {
     }
 
     // Memory alloc
-    temp = (pgm *) mymalloc(sizeof(pgm));
+    temp = (pgm *) malloc(sizeof(pgm));
     if (!temp) return NULL;
 
     // "P5" from the beginning of PGM is stored
@@ -61,9 +61,9 @@ pgm *create_pgm(char *filepath) {
 
     // Storing actual PGM image data (pixel values)
     i = 0;
-    temp->data = (byte *) mymalloc(temp->width * temp->width * sizeof(byte));
+    temp->data = (byte *) malloc(temp->width * temp->width * sizeof(byte));
     if (!temp->data) {
-        myfree((void *) &temp);
+        free(temp);
         return NULL;
     }
     while(1) {
@@ -149,7 +149,7 @@ void free_pgm(pgm **p) {
     if (!p) return;
 
     // Freeing data first, then pgm struct
-    myfree((void *) &((*p)->data));
-    myfree((void *) p);
+    free((*p)->data);
+    free(*p);
     *p = NULL;
 }
