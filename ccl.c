@@ -122,7 +122,7 @@ int run_ccl_algo(byte *data, uint width, uint height) {
                 uniques[unique] = top_el->value;
                 unique++;
                 if (unique > 255) {
-                    perror("ERROR: There is more than 255 distinct components in the picture!");
+                    perror("ERROR: There is more than 255 distinct components in the picture!\n");
                     return FAILURE;
                 }
             }

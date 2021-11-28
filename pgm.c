@@ -23,7 +23,7 @@ pgm *create_pgm(char *filepath) {
     // Opening file from param
     fp = fopen(filepath, "r");
     if (!fp) {
-        perror("ERROR: Filepath is invalid, input file might not exist!");
+        perror("ERROR: Filepath is invalid, input file might not exist!\n");
         return NULL;
     }
 
@@ -75,7 +75,7 @@ pgm *create_pgm(char *filepath) {
 
     // Checking if the file is properly closed
     if (fclose(fp) == EOF) {
-        perror("ERROR Closing input file!");
+        perror("ERROR Closing input file!\n");
         return 0;
     }
 
@@ -119,7 +119,7 @@ int write_pgm_file(pgm *p, char *filepath) {
     // Opening file for writing
     fp = fopen(filepath, "w");
     if (!fp) {
-        perror("ERROR: Something went wrong with creating the file!\nProbably out of memory!");
+        perror("ERROR: Something went wrong with creating the file!\nProbably out of memory!\n");
         return FAILURE;
     }
 
@@ -133,7 +133,7 @@ int write_pgm_file(pgm *p, char *filepath) {
 
     // Checking if the file is properly closed
     if (fclose(fp) == EOF) {
-        perror("ERROR Closing output file!");
+        perror("ERROR Closing output file!\n");
         return FAILURE;
     }
 
