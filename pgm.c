@@ -1,4 +1,4 @@
-#include <stdlib.h>
+//#include <stdlib.h> // Commented because of "mem.h"
 #include <stdio.h>
 #include <ctype.h>
 #include "pgm.h"
@@ -18,7 +18,7 @@ pgm *create_pgm(char *filepath) {
     FILE *fp = NULL;
     pgm *temp = NULL;
     unsigned char ch;
-    int i = 0;
+    int i;
 
     // Opening file from param
     fp = fopen(filepath, "r");
@@ -89,7 +89,7 @@ pgm *create_pgm(char *filepath) {
  */
 int is_pgm_binary(pgm *p) {
     // Initialization
-    int i = 0;
+    int i;
 
     // Sanity check
     if (!p) return FAILURE;
@@ -111,7 +111,7 @@ int is_pgm_binary(pgm *p) {
 int write_pgm_file(pgm *p, char *filepath) {
     // Initialization
     FILE *fp = NULL;
-    int i = 0;
+    int i;
 
     // Sanity check
     if (!p) return FAILURE;

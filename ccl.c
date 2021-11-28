@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h>
+//#include <stdlib.h> // Commented because of "mem.h"
 #include "ccl.h"
 #include "disj_set.h"
 #include "mem.h"
@@ -272,6 +272,7 @@ int run_ccl_algo(byte *data, uint width, uint height) {
     uniques = (uint *) mycalloc(255, sizeof(uint)); // 255 because there is 256 values in byte, 0 is background
     if (!uniques) return FAILURE;
     unique = find_unique_components(uniques, width, height, disj_sets);
+    if (!unique) return FAILURE;
 
     // Setup colors
     colors = (byte *) mymalloc(unique * sizeof(byte));
