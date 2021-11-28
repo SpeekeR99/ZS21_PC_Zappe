@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <ctype.h>
 #include "pgm.h"
-#include "mem.h"
 
 /**
  * Creates pgm structure based on input file

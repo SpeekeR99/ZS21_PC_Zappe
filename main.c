@@ -89,16 +89,25 @@ int main(int argc, char *argv[]) {
 
     // PMG struct
     image = create_pgm(input);
-    if (!image) return EXIT_FAILURE;
+    if (!image) {
+        perror("ERROR: Out of memory!");
+        return EXIT_FAILURE;
+    }
 
     // Checking if the input is binary
     check_binary_input(image);
 
     // CCL Algorithm, image data is coloured after this
-    run_ccl_algo(image->data, image->width, image->height);
+    if (!run_ccl_algo(image->data, image->width, image->height)) {
+        perror("ERROR: Error occurred while running the main algorithm");
+        return EXIT_FAILURE;
+    }
 
     // Output image, result
-    write_pgm_file(image, result);
+    if (!write_pgm_file(image, result)) {
+        perror("ERROR: Error occurred while creating output file!");
+        return EXIT_FAILURE;
+    }
 
     // Free
     free(input);
