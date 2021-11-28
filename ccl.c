@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "ccl.h"
 #include "disj_set.h"
+#include "mem.h"
 
 /**
  * First row of pixels, needs to be done because of the shape of the mask
@@ -261,19 +262,19 @@ int run_ccl_algo(byte *data, uint width, uint height) {
     if (!data) return FAILURE;
 
     // Ini of disjoint sets
-    disj_sets = (disj_set_element **) calloc(width * height, sizeof(disj_set_element));
+    disj_sets = (disj_set_element **) mycalloc(width * height, sizeof(disj_set_element));
     if (!disj_sets) return FAILURE;
 
     // First pass
     first_pass(data, width, height, disj_sets, &next_label);
 
     // Find unique components, so colours can be equally distributed
-    uniques = (uint *) calloc(255, sizeof(uint)); // 255 because there is 256 values in byte, 0 is background
+    uniques = (uint *) mycalloc(255, sizeof(uint)); // 255 because there is 256 values in byte, 0 is background
     if (!uniques) return FAILURE;
     unique = find_unique_components(uniques, width, height, disj_sets);
 
     // Setup colors
-    colors = (byte *) malloc(unique * sizeof(byte));
+    colors = (byte *) mymalloc(unique * sizeof(byte));
     if (!colors) return FAILURE;
     for (i = 0; i < unique; i++) {
         colors[i] = (i + 1) * 255 / unique;
@@ -289,9 +290,9 @@ int run_ccl_algo(byte *data, uint width, uint height) {
             disj_set_element_free(&(disj_sets[curr_index]));
         }
     }
-    free(disj_sets);
-    free(uniques);
-    free(colors);
+    myfree((void **) &disj_sets);
+    myfree((void **) &uniques);
+    myfree((void **) &colors);
 
     return SUCCESS;
 }

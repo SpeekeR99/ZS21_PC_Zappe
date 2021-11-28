@@ -18,6 +18,19 @@ void *mymalloc(size_t size) {
 }
 
 /**
+ * Function uses standard calloc and if the allocation goes well
+ * increments the memory blocks counter
+ * @param num num and size multiplied together gives the wanted size of memory block
+ * @param size num and size multiplied together gives the wanted size of memory block
+ * @return Pointer to wanted memory block or NULL
+ */
+void *mycalloc(size_t num, size_t size) {
+    void *ptr = calloc(num, size);
+    if (ptr) mem_blocks++;
+    return ptr;
+}
+
+/**
  * Function uses standard free and if the double pointer was not NULL to begin with
  * decrements the memory blocks counter
  * @param ptr pointer to a pointer that's to be freed

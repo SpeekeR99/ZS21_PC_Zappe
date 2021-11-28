@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "pgm.h"
 #include "ccl.h"
+#include "mem.h"
 
 /**
  * If .pgm is not filled in the user input filepath, fills it in
@@ -19,14 +20,14 @@ void check_user_input(const char *filepath, char **programme_filepath) {
     // If the input already has .pgm, just copy it to input
     if (filepath[length - 5] == '.' && filepath[length - 4] == 'p' &&
         filepath[length - 3] == 'g' && filepath[length - 2] == 'm') {
-        (*programme_filepath) = (char *) malloc(length * sizeof(char));
+        (*programme_filepath) = (char *) mymalloc(length * sizeof(char));
         if (!*programme_filepath) return;
         for (i = 0; i < length; i++) {
             (*programme_filepath)[i] = filepath[i];
         }
     } // If the input doesn't have .pgm make it have .pgm
     else {
-        (*programme_filepath) = (char *) malloc((length + 4) * sizeof(char));
+        (*programme_filepath) = (char *) mymalloc((length + 4) * sizeof(char));
         if (!*programme_filepath) return;
         for (i = 0; i < length - 1; i++) {
             (*programme_filepath)[i] = filepath[i];
@@ -110,8 +111,10 @@ int main(int argc, char *argv[]) {
     }
 
     // Free
-    free(input);
-    free(result);
+    myfree((void **) &input);
+    myfree((void **) &result);
     free_pgm(&image);
+//    printf("Allocated memory blocks at the end: %d\n", mem_blocks);
+
     return EXIT_SUCCESS;
 }

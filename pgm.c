@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include "pgm.h"
+#include "mem.h"
 
 /**
  * Creates pgm structure based on input file
@@ -27,7 +28,7 @@ pgm *create_pgm(char *filepath) {
     }
 
     // Memory alloc
-    temp = (pgm *) malloc(sizeof(pgm));
+    temp = (pgm *) mymalloc(sizeof(pgm));
     if (!temp) return NULL;
 
     // "P5" from the beginning of PGM is stored
@@ -60,9 +61,9 @@ pgm *create_pgm(char *filepath) {
 
     // Storing actual PGM image data (pixel values)
     i = 0;
-    temp->data = (byte *) malloc(temp->width * temp->width * sizeof(byte));
+    temp->data = (byte *) mymalloc(temp->width * temp->width * sizeof(byte));
     if (!temp->data) {
-        free(temp);
+        myfree((void **) &temp);
         return NULL;
     }
     while (1) {
@@ -148,7 +149,7 @@ void free_pgm(pgm **p) {
     if (!p) return;
 
     // Freeing data first, then pgm struct
-    free((*p)->data);
-    free(*p);
+    myfree((void **) &((*p)->data));
+    myfree((void **) p);
     *p = NULL;
 }

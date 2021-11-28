@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "disj_set.h"
+#include "mem.h"
 
 /**
  * Function makes a set consisting a single "node"
@@ -12,7 +13,7 @@ disj_set_element *disj_set_make_set(uint value) {
     disj_set_element *temp = NULL;
 
     // Mem alloc
-    temp = (disj_set_element *) malloc(sizeof(disj_set_element));
+    temp = (disj_set_element *) mymalloc(sizeof(disj_set_element));
     if (!temp) return NULL;
 
     // Fill the temp
@@ -94,6 +95,6 @@ void disj_set_element_free(disj_set_element **el) {
     // Sanity check
     if (!*el) return;
 
-    free(*el);
+    myfree((void **) el);
     *el = NULL;
 }
