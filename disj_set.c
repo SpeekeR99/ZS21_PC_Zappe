@@ -1,4 +1,3 @@
-//#include <stdlib.h> // Commented because of "mem.h"
 #include "disj_set.h"
 #include "mem.h"
 

@@ -1,7 +1,10 @@
 #ifndef __DISJ_SET_H__
 #define __DISJ_SET_H__
 
+#ifndef __UINT__
+#define __UINT__
 typedef unsigned int uint;
+#endif
 
 typedef struct the_disj_set_element {
     struct the_disj_set_element *parent;

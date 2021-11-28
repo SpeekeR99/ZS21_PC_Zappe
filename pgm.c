@@ -1,4 +1,3 @@
-//#include <stdlib.h> // Commented because of "mem.h"
 #include <stdio.h>
 #include <ctype.h>
 #include "pgm.h"

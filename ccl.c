@@ -1,5 +1,4 @@
 #include <stdio.h>
-//#include <stdlib.h> // Commented because of "mem.h"
 #include "ccl.h"
 #include "disj_set.h"
 #include "mem.h"

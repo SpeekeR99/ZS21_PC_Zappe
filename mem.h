@@ -3,7 +3,10 @@
 
 #include <stddef.h>
 
+#ifndef __UINT__
+#define __UINT__
 typedef unsigned int uint;
+#endif
 
 extern uint mem_blocks;
 
