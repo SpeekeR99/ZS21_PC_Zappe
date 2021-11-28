@@ -15,9 +15,9 @@ void first_row(const byte *data, uint width, disj_set_element **disj_sets, uint 
 
     for (x = 1; x < width; x++) {
         if (data[x] != 0x00) {
-            if (data[x-1] != 0x00) {
-                disj_sets[x] = disj_set_make_set(disj_sets[x-1]->value);
-                disj_set_union(disj_sets[x], disj_sets[x-1]);
+            if (data[x - 1] != 0x00) {
+                disj_sets[x] = disj_set_make_set(disj_sets[x - 1]->value);
+                disj_set_union(disj_sets[x], disj_sets[x - 1]);
             } else {
                 disj_sets[x] = disj_set_make_set(*next_label);
                 (*next_label)++;
@@ -132,7 +132,8 @@ void first_pass(const byte *data, uint width, uint height, disj_set_element **di
                 top_left_index = curr_index - 1 - width;
                 top_index = curr_index - width;
                 top_right_index = curr_index + 1 - width;
-                if (data[left_index] != 0x00 || data[top_left_index] != 0x00 || data[top_index] != 0x00 || data[top_right_index] != 0x00) {
+                if (data[left_index] != 0x00 || data[top_left_index] != 0x00 || data[top_index] != 0x00 ||
+                    data[top_right_index] != 0x00) {
                     left_el = disj_sets[left_index];
                     top_left_el = disj_sets[top_left_index];
                     top_el = disj_sets[top_index];
@@ -219,7 +220,8 @@ uint find_unique_components(uint *uniques, uint width, uint height, disj_set_ele
  * @param uniques Unique values of distinct components (disjoint sets)
  * @param colors Unique colors, same indexing as uniques
  */
-void second_pass(byte *data, uint width, uint height, disj_set_element **disj_sets, const uint *uniques, const byte *colors) {
+void second_pass(byte *data, uint width, uint height, disj_set_element **disj_sets, const uint *uniques,
+                 const byte *colors) {
     uint x, y, i, curr_index;
     disj_set_element *curr_el;
 

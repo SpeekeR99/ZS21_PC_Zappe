@@ -38,21 +38,21 @@ pgm *create_pgm(char *filepath) {
 
     // Storing width
     i = 0;
-    while(!isspace(ch = fgetc(fp))) {
+    while (!isspace(ch = fgetc(fp))) {
         i = i * 10 + ch - '0';
     }
     temp->width = i;
 
     // Storing height
     i = 0;
-    while(!isspace(ch = fgetc(fp))) {
+    while (!isspace(ch = fgetc(fp))) {
         i = i * 10 + ch - '0';
     }
     temp->height = i;
 
     // Storing max_value
     i = 0;
-    while(!isspace(ch = fgetc(fp))) {
+    while (!isspace(ch = fgetc(fp))) {
         i = i * 10 + ch - '0';
     }
     temp->max_value = i;
@@ -65,9 +65,9 @@ pgm *create_pgm(char *filepath) {
         free(temp);
         return NULL;
     }
-    while(1) {
+    while (1) {
         ch = fgetc(fp);
-        if(feof(fp)) break;
+        if (feof(fp)) break;
         temp->data[i] = ch;
         i++;
     }

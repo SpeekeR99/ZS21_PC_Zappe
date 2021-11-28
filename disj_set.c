@@ -30,7 +30,7 @@ disj_set_element *disj_set_make_set(uint value) {
  * @param el Pointer to disjoint set data structure element, that is being examined
  * @return Pointer to element representing the representative parent of the set
  */
-disj_set_element *disj_set_find(disj_set_element* el) {
+disj_set_element *disj_set_find(disj_set_element *el) {
     // Init
     disj_set_element *orig = el;
 

@@ -14,7 +14,7 @@ void check_user_input(const char *filepath, char **programme_filepath) {
 
     do { // Counting the input length
         symbol = filepath[length++];
-    } while(symbol);
+    } while (symbol);
 
     // If the input already has .pgm, just copy it to input
     if (filepath[length - 5] == '.' && filepath[length - 4] == 'p' &&
@@ -65,8 +65,8 @@ void arguments(int argc, char *argv[], char **input, char **result) {
  * writes out an error and exit's the programme with exit code 2.
  * @param p input file processed into pgm structure
  */
-void check_binary_input(pgm* p) {
-    if(!is_pgm_binary(p)) {
+void check_binary_input(pgm *p) {
+    if (!is_pgm_binary(p)) {
         perror("ERROR: Input file is not binary!\nInput file must be black and white!\n");
         exit(2);
     }
