@@ -1,8 +1,8 @@
 #ifndef __CCL_H__
 #define __CCL_H__
 
-#define FAILURE 0;
-#define SUCCESS 1;
+#define FAILURE 0
+#define SUCCESS 1
 
 typedef unsigned int uint;
 typedef unsigned char byte;

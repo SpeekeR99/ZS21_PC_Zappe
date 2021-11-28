@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
     myfree((void **) &input);
     myfree((void **) &result);
     free_pgm(&image);
-//    printf("Allocated memory blocks at the end: %d\n", mem_blocks);
+    printf("Allocated memory blocks at the end: %d\n", mem_blocks);
 
     return EXIT_SUCCESS;
 }
