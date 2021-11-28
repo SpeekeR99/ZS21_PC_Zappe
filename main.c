@@ -13,11 +13,11 @@ void check_user_input(const char *filepath, char **programme_filepath) {
     int length = 0, i;
     byte symbol;
 
-    do { // Counting the input length
+    do { /* Counting the input length */
         symbol = filepath[length++];
     } while (symbol);
 
-    // If the input already has .pgm, just copy it to input
+    /* If the input already has .pgm, just copy it to input */
     if (filepath[length - 5] == '.' && filepath[length - 4] == 'p' &&
         filepath[length - 3] == 'g' && filepath[length - 2] == 'm') {
         (*programme_filepath) = (char *) mymalloc(length * sizeof(char));
@@ -25,7 +25,7 @@ void check_user_input(const char *filepath, char **programme_filepath) {
         for (i = 0; i < length; i++) {
             (*programme_filepath)[i] = filepath[i];
         }
-    } // If the input doesn't have .pgm make it have .pgm
+    } /* If the input doesn't have .pgm make it have .pgm */
     else {
         (*programme_filepath) = (char *) mymalloc((length + 4) * sizeof(char));
         if (!*programme_filepath) return;
@@ -50,7 +50,7 @@ void check_user_input(const char *filepath, char **programme_filepath) {
  * @param result Result filepath
  */
 void arguments(int argc, char *argv[], char **input, char **result) {
-    // Sanity check, sort of
+    /* Sanity check, sort of */
     if (argc != 3) {
         perror("ERROR: Expected execution of program as shown below:\nccl.exe <input-file[.pgm]> <output-file>\n");
         exit(3);
@@ -80,41 +80,41 @@ void check_binary_input(pgm *p) {
  * @return 0 if everything went well OR non-zero value if something went wrong
  */
 int main(int argc, char *argv[]) {
-    // Ini
+    /* Ini */
     pgm *image;
     char *input = NULL;
     char *result = NULL;
 
-    // Input & result image, cmd arguments
+    /* Input & result image, cmd arguments */
     arguments(argc, argv, &input, &result);
 
-    // PMG struct
+    /* PMG struct */
     image = create_pgm(input);
     if (!image) {
         perror("ERROR: Out of memory!");
         return EXIT_FAILURE;
     }
 
-    // Checking if the input is binary
+    /* Checking if the input is binary */
     check_binary_input(image);
 
-    // CCL Algorithm, image data is coloured after this
+    /* CCL Algorithm, image data is coloured after this */
     if (!run_ccl_algo(image->data, image->width, image->height)) {
         perror("ERROR: Error occurred while running the main algorithm");
         return EXIT_FAILURE;
     }
 
-    // Output image, result
+    /* Output image, result */
     if (!write_pgm_file(image, result)) {
         perror("ERROR: Error occurred while creating output file!");
         return EXIT_FAILURE;
     }
 
-    // Free
+    /* Free */
     myfree((void **) &input);
     myfree((void **) &result);
     free_pgm(&image);
-//    printf("Allocated memory blocks at the end: %d\n", mem_blocks);
+    /* printf("Allocated memory blocks at the end: %d\n", mem_blocks); */
 
     return EXIT_SUCCESS;
 }

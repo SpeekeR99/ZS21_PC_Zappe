@@ -1,3 +1,5 @@
+/* #include <stdlib.h> */
+/* Commented because of "mem.h" */
 #include <stdio.h>
 #include <ctype.h>
 #include "pgm.h"
@@ -13,52 +15,52 @@
  * @return Pointer to corresponding structure if everything goes well, NULL otherwise
  */
 pgm *create_pgm(char *filepath) {
-    // Initialization
+    /* Initialization */
     FILE *fp = NULL;
     pgm *temp = NULL;
     unsigned char ch;
     int i;
 
-    // Opening file from param
+    /* Opening file from param */
     fp = fopen(filepath, "r");
     if (!fp) {
         perror("ERROR: Filepath is invalid, input file might not exist!\n");
         return NULL;
     }
 
-    // Memory alloc
+    /* Memory alloc */
     temp = (pgm *) mymalloc(sizeof(pgm));
     if (!temp) return NULL;
 
-    // "P5" from the beginning of PGM is stored
+    /* "P5" from the beginning of PGM is stored */
     temp->magic_number[0] = fgetc(fp);
     temp->magic_number[1] = fgetc(fp);
     temp->magic_number[2] = 0x00;
-    fgetc(fp); // Skipping the whitespace char
+    fgetc(fp); /* Skipping the whitespace char */
 
-    // Storing width
+    /* Storing width */
     i = 0;
     while (!isspace(ch = fgetc(fp))) {
         i = i * 10 + ch - '0';
     }
     temp->width = i;
 
-    // Storing height
+    /* Storing height */
     i = 0;
     while (!isspace(ch = fgetc(fp))) {
         i = i * 10 + ch - '0';
     }
     temp->height = i;
 
-    // Storing max_value
+    /* Storing max_value */
     i = 0;
     while (!isspace(ch = fgetc(fp))) {
         i = i * 10 + ch - '0';
     }
     temp->max_value = i;
-    fgetc(fp); // Skipping the whitespace after max_value
+    fgetc(fp); /* Skipping the whitespace after max_value */
 
-    // Storing actual PGM image data (pixel values)
+    /* Storing actual PGM image data (pixel values) */
     i = 0;
     temp->data = (byte *) mymalloc(temp->width * temp->width * sizeof(byte));
     if (!temp->data) {
@@ -72,7 +74,7 @@ pgm *create_pgm(char *filepath) {
         i++;
     }
 
-    // Checking if the file is properly closed
+    /* Checking if the file is properly closed */
     if (fclose(fp) == EOF) {
         perror("ERROR Closing input file!\n");
         return 0;
@@ -87,13 +89,13 @@ pgm *create_pgm(char *filepath) {
  * @return 1 if the image is binary, 0 if it's not
  */
 int is_pgm_binary(pgm *p) {
-    // Initialization
+    /* Initialization */
     int i;
 
-    // Sanity check
+    /* Sanity check */
     if (!p) return FAILURE;
 
-    // Checking data byte by byte
+    /* Checking data byte by byte */
     for (i = 0; i < p->width * p->height; i++) {
         if (p->data[i] != 0x00 && p->data[i] != 0xFF) return FAILURE;
     }
@@ -108,21 +110,21 @@ int is_pgm_binary(pgm *p) {
  * @return 1 if everything went well, 0 if there was an error
  */
 int write_pgm_file(pgm *p, char *filepath) {
-    // Initialization
+    /* Initialization */
     FILE *fp = NULL;
     int i;
 
-    // Sanity check
+    /* Sanity check */
     if (!p) return FAILURE;
 
-    // Opening file for writing
+    /* Opening file for writing */
     fp = fopen(filepath, "w");
     if (!fp) {
         perror("ERROR: Something went wrong with creating the file!\nProbably out of memory!\n");
         return FAILURE;
     }
 
-    // Writing actual data into the file
+    /* Writing actual data into the file */
     fprintf(fp, "%s\n", p->magic_number);
     fprintf(fp, "%d %d\n", p->width, p->height);
     fprintf(fp, "%d\n", p->max_value);
@@ -130,7 +132,7 @@ int write_pgm_file(pgm *p, char *filepath) {
         fputc(p->data[i], fp);
     }
 
-    // Checking if the file is properly closed
+    /* Checking if the file is properly closed */
     if (fclose(fp) == EOF) {
         perror("ERROR Closing output file!\n");
         return FAILURE;
@@ -144,10 +146,10 @@ int write_pgm_file(pgm *p, char *filepath) {
  * @param p double pointer to pgm struct
  */
 void free_pgm(pgm **p) {
-    // Sanity check
+    /* Sanity check */
     if (!p) return;
 
-    // Freeing data first, then pgm struct
+    /* Freeing data first, then pgm struct */
     myfree((void **) &((*p)->data));
     myfree((void **) p);
     *p = NULL;

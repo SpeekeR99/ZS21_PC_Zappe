@@ -8,7 +8,7 @@
 typedef unsigned int uint;
 #endif
 
-extern uint mem_blocks;
+uint mem_blocks;
 
 void *mymalloc(size_t size);
 void *mycalloc(size_t num, size_t size);

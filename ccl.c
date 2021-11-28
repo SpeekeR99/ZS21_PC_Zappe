@@ -1,3 +1,5 @@
+/* #include <stdlib.h> */
+/* Commented because of "mem.h" */
 #include <stdio.h>
 #include "ccl.h"
 #include "disj_set.h"
@@ -86,19 +88,19 @@ void last_column(const byte *data, uint width, uint height, disj_set_element **d
  * @param next_label Labeling the pixels, for disjoint sets
  */
 void prereq_pixels(const byte *data, uint width, uint height, disj_set_element **disj_sets, uint *next_label) {
-    // First pixel
+    /* First pixel */
     if (data[0] != 0x00) {
         disj_sets[0] = disj_set_make_set(*next_label);
         (*next_label)++;
     }
 
-    // First row of pixels
+    /* First row of pixels */
     first_row(data, width, disj_sets, next_label);
 
-    // First column of pixels
+    /* First column of pixels */
     first_column(data, width, height, disj_sets, next_label);
 
-    // Last column of pixels
+    /* Last column of pixels */
     last_column(data, width, height, disj_sets, next_label);
 }
 
@@ -116,14 +118,14 @@ void prereq_pixels(const byte *data, uint width, uint height, disj_set_element *
  * @param next_label Labeling the pixels, for disjoint sets
  */
 void first_pass(const byte *data, uint width, uint height, disj_set_element **disj_sets, uint *next_label) {
-    // Init
+    /* Init */
     uint x, y, curr_index, left_index, top_left_index, top_index, top_right_index;
     disj_set_element *left_el = NULL, *top_left_el = NULL, *top_el = NULL, *top_right_el = NULL;
 
-    // Pre-required first few pixels, for the mask shape
+    /* Pre-required first few pixels, for the mask shape */
     prereq_pixels(data, width, height, disj_sets, next_label);
 
-    // All the other pixels
+    /* All the other pixels */
     for (y = 1; y < height; y++) {
         for (x = 1; x < width - 1; x++) {
             curr_index = x + y * width;
@@ -173,7 +175,7 @@ void first_pass(const byte *data, uint width, uint height, disj_set_element **di
  * @return Number of distinct unique components in the picture
  */
 uint find_unique_components(uint *uniques, uint width, uint height, disj_set_element **disj_sets) {
-    // Init
+    /* Init */
     uint x, y, i, curr_index, continue_now, unique = 0;
     disj_set_element *curr_el;
 
@@ -251,39 +253,39 @@ void second_pass(byte *data, uint width, uint height, disj_set_element **disj_se
  * @return 1 if everything goes well, 0 otherwise
  */
 int run_ccl_algo(byte *data, uint width, uint height) {
-    // Init
+    /* Init */
     uint i, x, y, next_label = 1, curr_index, unique, *uniques = NULL;
     byte *colors = NULL;
 
     disj_set_element **disj_sets = NULL;
 
-    // Sanity check
+    /* Sanity check */
     if (!data) return FAILURE;
 
-    // Ini of disjoint sets
+    /* Ini of disjoint sets */
     disj_sets = (disj_set_element **) mycalloc(width * height, sizeof(disj_set_element));
     if (!disj_sets) return FAILURE;
 
-    // First pass
+    /* First pass */
     first_pass(data, width, height, disj_sets, &next_label);
 
-    // Find unique components, so colours can be equally distributed
-    uniques = (uint *) mycalloc(255, sizeof(uint)); // 255 because there is 256 values in byte, 0 is background
+    /* Find unique components, so colours can be equally distributed */
+    uniques = (uint *) mycalloc(255, sizeof(uint)); /* 255 because there is 256 values in byte, 0 is background */
     if (!uniques) return FAILURE;
     unique = find_unique_components(uniques, width, height, disj_sets);
     if (!unique) return FAILURE;
 
-    // Setup colors
+    /* Setup colors */
     colors = (byte *) mymalloc(unique * sizeof(byte));
     if (!colors) return FAILURE;
     for (i = 0; i < unique; i++) {
         colors[i] = (i + 1) * 255 / unique;
     }
 
-    // Second pass, assign colours
+    /* Second pass, assign colours */
     second_pass(data, width, height, disj_sets, uniques, colors);
 
-    // Free
+    /* Free */
     for (y = 0; y < height; y++) {
         for (x = 0; x < width; x++) {
             curr_index = x + y * width;
