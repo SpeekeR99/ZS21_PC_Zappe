@@ -1,42 +1,26 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "pgm.h"
 #include "ccl.h"
 #include "mem.h"
 
 /**
  * If .pgm is not filled in the user input filepath, fills it in
+ * Uses string.h smartly (unlike the older version of this function
+ * which used cycles and a lot of ifs)
  * @param filepath Filepath from the user
  * @param input Filepath for the programme
  */
-void check_user_input(const char *filepath, char **programme_filepath) {
-    int length = 0, i;
-    byte symbol;
-
-    do { /* Counting the input length */
-        symbol = filepath[length++];
-    } while (symbol);
-
-    /* If the input already has .pgm, just copy it to input */
-    if (filepath[length - 5] == '.' && filepath[length - 4] == 'p' &&
-        filepath[length - 3] == 'g' && filepath[length - 2] == 'm') {
-        (*programme_filepath) = (char *) mymalloc(length * sizeof(char));
-        if (!*programme_filepath) return;
-        for (i = 0; i < length; i++) {
-            (*programme_filepath)[i] = filepath[i];
-        }
-    } /* If the input doesn't have .pgm make it have .pgm */
+void check_user_input(char *filepath, char **programme_filepath) {
+    if(!strcmp(filepath + strlen(filepath) - 4, ".pgm")) {
+        *programme_filepath = (char *) mymalloc((strlen(filepath) + 1) * sizeof(char));
+        strncpy(*programme_filepath, filepath, strlen(filepath));
+    }
     else {
-        (*programme_filepath) = (char *) mymalloc((length + 4) * sizeof(char));
-        if (!*programme_filepath) return;
-        for (i = 0; i < length - 1; i++) {
-            (*programme_filepath)[i] = filepath[i];
-        }
-        (*programme_filepath)[i++] = '.';
-        (*programme_filepath)[i++] = 'p';
-        (*programme_filepath)[i++] = 'g';
-        (*programme_filepath)[i++] = 'm';
-        (*programme_filepath)[i] = 0x00;
+        *programme_filepath = (char *) mymalloc((strlen(filepath) + 5) * sizeof(char));
+        strncpy(*programme_filepath, filepath, strlen(filepath) + 1);
+        strncat(*programme_filepath, ".pgm", 4);
     }
 }
 
@@ -114,7 +98,7 @@ int main(int argc, char *argv[]) {
     myfree((void **) &input);
     myfree((void **) &result);
     free_pgm(&image);
-    /* printf("Allocated memory blocks at the end: %d\n", mem_blocks); */
+    /*printf("Allocated memory blocks at the end: %d\n", mem_blocks);*/
 
     return EXIT_SUCCESS;
 }
