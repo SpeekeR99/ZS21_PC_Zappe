@@ -12,16 +12,18 @@
  * @param filepath Filepath from the user
  * @param input Filepath for the programme
  */
-void check_user_input(char *filepath, char **programme_filepath) {
+void check_user_input(const char *filepath, char **programme_filepath) {
     // Check if last 4 chars of user input filepath is ".pgm"
     if(!strcmp(filepath + strlen(filepath) - 4, ".pgm")) {
         // If yes, just copy it to program's filepath
         *programme_filepath = (char *) mymalloc((strlen(filepath) + 1) * sizeof(char));
+        if (!*programme_filepath) return;
         strncpy(*programme_filepath, filepath, strlen(filepath));
     }
     else {
         // If not, copy it to the program's filepath and append ".pgm" to it
         *programme_filepath = (char *) mymalloc((strlen(filepath) + 5) * sizeof(char));
+        if (!*programme_filepath) return;
         strncpy(*programme_filepath, filepath, strlen(filepath) + 1);
         strncat(*programme_filepath, ".pgm", 4);
     }
