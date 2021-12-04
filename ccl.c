@@ -143,13 +143,16 @@ void first_pass(const byte *data, uint width, uint height, disj_set_element **di
                     if (left_el) {
                         disj_sets[curr_index] = disj_set_make_set(left_el->value);
                         disj_set_union(disj_sets[curr_index], left_el);
-                    } else if (top_left_el) {
+                    }
+                    if (top_left_el) {
                         disj_sets[curr_index] = disj_set_make_set(top_left_el->value);
                         disj_set_union(disj_sets[curr_index], top_left_el);
-                    } else if (top_el) {
+                    }
+                    if (top_el) {
                         disj_sets[curr_index] = disj_set_make_set(top_el->value);
                         disj_set_union(disj_sets[curr_index], top_el);
-                    } else {
+                    }
+                    if (top_right_el){
                         disj_sets[curr_index] = disj_set_make_set(top_right_el->value);
                         disj_set_union(disj_sets[curr_index], top_right_el);
                     }
