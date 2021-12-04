@@ -41,7 +41,7 @@ void check_user_input(const char *filepath, char **programme_filepath) {
 void arguments(int argc, char *argv[], char **input, char **result) {
     /* Sanity check, sort of */
     if (argc != 3) {
-        perror("ERROR: Expected execution of program as shown below:\nccl.exe <input-file[.pgm]> <output-file>\n");
+        printf("ERROR: Expected execution of program as shown below:\nccl.exe <input-file[.pgm]> <output-file>\n");
         exit(3);
     }
 
@@ -57,7 +57,7 @@ void arguments(int argc, char *argv[], char **input, char **result) {
  */
 void check_binary_input(pgm *p) {
     if (!is_pgm_binary(p)) {
-        perror("ERROR: Input file is not binary!\nInput file must be black and white!\n");
+        printf("ERROR: Input file is not binary!\nInput file must be black and white!\n");
         exit(2);
     }
 }
@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
     /* PMG struct */
     image = create_pgm(input);
     if (!image) {
-        perror("ERROR: Out of memory!");
+        printf("ERROR: Out of memory!\n");
         return EXIT_FAILURE;
     }
 
@@ -89,13 +89,13 @@ int main(int argc, char *argv[]) {
 
     /* CCL Algorithm, image data is coloured after this */
     if (!run_ccl_algo(image->data, image->width, image->height)) {
-        perror("ERROR: Error occurred while running the main algorithm");
+        printf("ERROR: Error occurred while running the main algorithm\n");
         return EXIT_FAILURE;
     }
 
     /* Output image, result */
     if (!write_pgm_file(image, result)) {
-        perror("ERROR: Error occurred while creating output file!");
+        printf("ERROR: Error occurred while creating output file!\n");
         return EXIT_FAILURE;
     }
 

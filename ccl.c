@@ -197,7 +197,7 @@ uint find_unique_components(uint *uniques, uint width, uint height, disj_set_ele
                 uniques[unique] = curr_el->value;
                 unique++;
                 if (unique > 255) {
-                    perror("ERROR: There is more than 255 distinct components in the picture!\n");
+                    printf("ERROR: There is more than 255 distinct components in the picture!\n");
                     return FAILURE;
                 }
             }
