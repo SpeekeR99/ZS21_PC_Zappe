@@ -143,30 +143,21 @@ void first_pass(const byte *data, uint width, uint height, disj_set_element **di
                     if (left_el) {
                         disj_sets[curr_index] = disj_set_make_set(left_el->value);
                         disj_set_union(disj_sets[curr_index], left_el);
-                        disj_set_union(left_el, top_left_el);
-                        disj_set_union(left_el, top_el);
-                        disj_set_union(left_el, top_right_el);
                     } else if (top_left_el) {
                         disj_sets[curr_index] = disj_set_make_set(top_left_el->value);
                         disj_set_union(disj_sets[curr_index], top_left_el);
-                        disj_set_union(top_left_el, left_el);
-                        disj_set_union(top_left_el, top_el);
-                        disj_set_union(top_left_el, top_right_el);
                     } else if (top_el) {
                         disj_sets[curr_index] = disj_set_make_set(top_el->value);
                         disj_set_union(disj_sets[curr_index], top_el);
-                        disj_set_union(top_el, left_el);
-                        disj_set_union(top_el, top_left_el);
-                        disj_set_union(top_el, top_right_el);
                     } else {
                         disj_sets[curr_index] = disj_set_make_set(top_right_el->value);
                         disj_set_union(disj_sets[curr_index], top_right_el);
-                        disj_set_union(top_right_el, left_el);
-                        disj_set_union(top_right_el, top_el);
-                        disj_set_union(top_right_el, top_left_el);
                     }
                     disj_set_union(left_el, top_left_el);
+                    disj_set_union(left_el, top_el);
+                    disj_set_union(left_el, top_right_el);
                     disj_set_union(top_left_el, top_el);
+                    disj_set_union(top_left_el, top_right_el);
                     disj_set_union(top_el, top_right_el);
                 } else {
                     disj_sets[curr_index] = disj_set_make_set(*next_label);
